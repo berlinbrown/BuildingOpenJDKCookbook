@@ -1,0 +1,74 @@
+######################################################
+######################################################
+
+
+Start the JDK build.
+---------------------------------------------
+
+  26  ls
+   27  . jdk/make/jdk_generic_profile.sh
+   28  make sanity && make
+   29  history
+
+RROR: Your BOOTDIR environment variable does not point 
+       to a valid JDK for bootstrapping this build. 
+       A JDK 8  build must be bootstrapped using  
+       JDK 1.7.0 fcs (or later). 
+       Apparently, your bootstrap JDK is version 1.6.0 
+       Please update your ALT_BOOTDIR setting and start your build again. 
+
+So I installed:
+
+There is an error with the documentation online, you need to setup java7.
+
+http://download.oracle.com/otn-pub/java/jdk/7u1-b08/jdk-7u1-linux-x64.tar.gz
+
+story
+  107  export LANG=C ALT_BOOTDIR=/usr/lib/jvm/java-openjdk
+  108  export LANG=C ALT_BOOTDIR=/home/bbrown/Downloads/java7/jdk1.7.0_01
+  109  . jdk/make/jdk_generic_profile.sh
+  110  make sanity && make
+  111  export ALLOW_DOWNLOADS=true
+  112  make sanity && make
+
+
+Waiting...
+---------------------------------------------
+Wait for the build to finish.
+I have a slow machine for this era.  It is a 1.5ghz single core AMD with 4gigs of ram.
+
+
+bbrown@ubuntu:~$ date
+Sun Nov 13 15:53:52 PST 2011
+
+bbrown@ubuntu:~$ date
+Sun Nov 13 16:12:47 PST 2011
+
+bbrown@ubuntu:~$ date
+Sun Nov 13 16:54:49 PST 2011
+
+End   2011-11-13 19:03:19
+
+
+----
+
+/home/bbrown/src/jdk8/YourOpenJDK/jdk/make
+
+vi Makefile
+
+Removdd
+
+#
+# Docs
+#
+OTHERSUBDIRS =
+docs:: sanity-docs post-sanity-docs
+        $(OTHERSUBDIRS-loop)
+
+
+
+
+
+
+
+

@@ -1,0 +1,134 @@
+########################################
+########################################
+
+These notes are based on:
+http://hg.openjdk.java.net/jdk8/build/raw-file/tip/README-builds.html
+
+Download JDK for linux 7.
+http://download.oracle.com/otn-pub/java/jdk/7u1-b08/jdk-7u1-linux-x64.tar.gz
+
+
+1. What version of linux are we using?
+------------------------------------
+
+bbrown@ubuntu:~/src$ uname -a
+Linux ubuntu 2.6.32-33-generic #72-Ubuntu SMP Fri Jul 29 21:08:37 UTC 2011 i686 GNU/Linux
+
+bbrown@ubuntu:~/src$ cat /etc/issue
+Ubuntu 10.04.3 LTS \n \
+
+bbrown@ubuntu:~/src$ cat /etc/lsb-release
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=10.04
+DISTRIB_CODENAME=lucid
+DISTRIB_DESCRIPTION="Ubuntu 10.04.3 LTS"
+
+
+2. Setup the Forest extension for Mercurial.
+------------------------------------
+This is not needed for building jdk8 but you may need
+this setup for jdk6 and jdk7 and it doesn't hurt.
+
+
+hg clone https://bitbucket.org/pmezard/hgforest-crew/overview/ YourHgForest
+
+Once you have the file forest.py, you need to add these lines to your ${HOME}/.hgrc file:
+[extensions] 
+forest = YourHgForest/forest.py
+
+
+3. GETTING THE SOURCE
+------------------------------------
+
+History command up to this point:
+Ignore some of the cd and ls commands
+
+   56  hg clone https://bitbucket.org/pmezard/hgforest-crew/overview/ YourHgForest
+   57  sudo apt-get install mercurial
+   58  pwd
+   59  ls
+   60  cd src
+   62  uname -a
+   63  cat /etc/issue
+   64  cat /etc/lsb-release
+   65  hg clone https://bitbucket.org/pmezard/hgforest-crew/overview/ YourHgForest
+   69  hg clone https://bitbucket.org/pmezard/hgforest-crew/overview/ YourHgForest
+   70  vi .hgrc
+   72  cd src
+   74  mv jdk8/ jdk8run
+   75  mkdir jdk8
+   76  cd jdk8
+   79  hg clone http://hg.openjdk.java.net/jdk8/jdk8 YourOpenJDK
+   80  cd YourOpenJDK/
+   82  sh ./get_source.sh 
+   83  history
+
+
+
+Note: I wanted to test the jdk8 lambda support so I used this URL:
+http://hg.openjdk.java.net/lambda/lambda/
+
+
+
+4. Simple approach, get dependencies for JDK6
+------------------------------------
+
+sudo aptitude build-dep openjdk-6
+
+sudo aptitude install openjdk-6-jdk
+------------------------------------
+
+bbrown@ubuntu:~/src/jdk8/YourOpenJDK$ sudo aptitude build-dep openjdk-6
+[sudo] password for bbrown: 
+Reading package lists... Done
+Building dependency tree        
+Reading state information... Done
+Initializing package states... Done
+Writing extended state information... Done
+The following NEW packages will be installed:
+  ant ant-gcj{a} ant-optional ant-optional-gcj{a} autoconf automake autotools-dev build-essential{a} comerr-dev{a} 
+  cvs{a} debhelper dpkg-dev{a} ecj{a} ecj-gcj fakeroot{a} fastjar g++{a} g++-4.4 gcj-4.4-base{a} gcj-4.4-jdk{a} 
+  gcj-4.4-jre{a} gcj-4.4-jre-headless{a} gcj-4.4-jre-lib{a} gcj-jdk gcj-jre{a} gcj-jre-headless{a} gettext{a} 
+  html2text{a} intltool-debian{a} krb5-multidev{a} libantlr-java{a} libasound2-dev libatk1.0-dev{a} 
+  libavahi-client-dev{a} libavahi-common-dev{a} libcairo2-dev{a} libcups2-dev libdbus-1-dev{a} libdbus-glib-1-dev{a} 
+  libdirectfb-dev{a} libdirectfb-extra{a} libecj-java{a} libecj-java-gcj{a} libexpat1-dev{a} libffi-dev 
+  libfontconfig1-dev{a} libfreetype6-dev libgcj-bc{a} libgcj-common{a} libgcj10{a} libgcj10-awt{a} libgcj10-dev{a} 
+  libgcrypt11-dev{a} libgif-dev libglib2.0-dev{a} libgnutls-dev{a} libgpg-error-dev{a} libgssrpc4{a} libgtk2.0-dev 
+  libiw-dev{a} libjaxp1.3-java{a} libjline-java{a} libjpeg62-dev libkadm5clnt-mit7{a} libkadm5srv-mit7{a} 
+  libkdb5-4{a} libkrb5-dev{a} liblcms1-dev libllvm2.7{a} libltdl-dev{a} libmail-sendmail-perl{a} libnotify-dev{a} 
+  libnspr4-dev{a} libnss3-dev libopagent1{a} libpango1.0-dev{a} libpixman-1-dev{a} libpng12-dev libpulse-dev 
+  libstdc++6-4.4-dev{a} libsys-hostname-long-perl{a} libsysfs-dev{a} libtasn1-3-dev{a} libtool libxalan2-java 
+  libxaw7-dev libxcb-render-util0-dev{a} libxcb-render0-dev{a} libxcomposite-dev{a} libxcursor-dev{a} 
+  libxdamage-dev{a} libxerces2-java{a} libxext-dev{a} libxfixes-dev{a} libxft-dev{a} libxi-dev libxinerama-dev 
+  libxmu-dev{a} libxmu-headers{a} libxp-dev libxpm-dev{a} libxrandr-dev{a} libxrender-dev libxtst-dev llvm{a} 
+  llvm-dev m4 mauve oprofile patch{a} po-debconf{a} rhino sharutils x11proto-composite-dev{a} x11proto-damage-dev{a} 
+  x11proto-fixes-dev{a} x11proto-print-dev{a} x11proto-randr-dev{a} x11proto-record-dev{a} x11proto-render-dev{a} 
+  x11proto-xext-dev{a} x11proto-xinerama-dev{a} xulrunner-1.9.2-dev xvfb xz-utils{a} zlib1g-dev 
+The following packages will be REMOVED:
+  libvpx0{u} linux-headers-2.6.32-28{u} linux-headers-2.6.32-28-generic{u} 
+
+
+With Ubuntu, setup environment variables :
+
+Note: the java6 bootdir is invalid but I left it here because it
+was mentioned in the openjdk8 docs.
+
+Use the notes in BUILD_JDK8_README
+
+
+export LANG=C ALT_BOOTDIR=/usr/lib/jvm/java-6-openjdk
+
+ 90  sudo aptitude build-dep openjdk-6
+   91  sudo aptitude install openjdk-6-jdk
+   92  javac
+   93  whereis javac
+   94  ls /usr/lib
+   95  ls /usr/lib/jvm
+   96  ls /usr/lib/jvm/java-1.6.0-openjdk/
+   97  export LANG=C ALT_BOOTDIR=/usr/lib/jvm/java-6-openjdk
+   98  history
+
+
+Now continue with the build notes in BUILD_JDK8_README
+
+
